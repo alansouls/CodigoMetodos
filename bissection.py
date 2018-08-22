@@ -1,4 +1,6 @@
 import math
+import matplotlib.pyplot as plt
+import numpy as np
 
 def bissection(a,b,e,maxIter,f):
 	if f(a) == 0:
@@ -23,10 +25,16 @@ def bissection(a,b,e,maxIter,f):
 
 
 def functionTest(x):
-	return pow(x,3)+pow(x,2)+x+2
+	return np.power(x,3)+np.power(x,2)+x+2
 
 
 
 
 r = bissection(-2.0,-1.0,0.0001,100,functionTest)
+x = np.arange(-2,2,0.0001)
+fx = functionTest(x)
+plt.plot(x,fx)
+plt.annotate('Raiz da Equacao', xy =(r,0),xytext = (r+1,0.5),arrowprops=dict(facecolor='black', shrink=0.05),)
+plt.grid(True)
 print(r)
+plt.show()
