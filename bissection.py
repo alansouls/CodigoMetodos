@@ -1,6 +1,4 @@
-import math
 import matplotlib.pyplot as plt
-import matplotlib
 import matplotlib.animation as animation
 import numpy as np
 import sys
@@ -75,7 +73,7 @@ def animationFunction(x):
 
 print(r)
 
-table = PrettyTable()
+table = PrettyTable(title = 'ola')
 
 column_names = ['it','a','f(a)','b','f(b)','xm','f(xm)','e','b-a']
 table.add_column(column_names[0],ilist)
@@ -87,7 +85,8 @@ table.add_column(column_names[5],xlist)
 table.add_column(column_names[6],f(np.asarray(xlist)))
 table.add_column(column_names[7],[e]*len(xlist))
 table.add_column(column_names[8],np.asarray(blist) - np.asarray(alist))
-print(table.get_string(title = "Tabela da Bisseção para " + sys.argv[1]))
+
+print(table)
 if r != 'erro':
 	ani = animation.FuncAnimation(fig, animationFunction, frames=xarray,
                     init_func=init, blit=True)
