@@ -3,6 +3,7 @@ import matplotlib.animation as animation
 import numpy as np
 import sys
 from prettytable import PrettyTable
+from timeit import default_timer as timer
 
 def bissection(a,b,e,maxIter,f):
 	xlist = []
@@ -40,7 +41,9 @@ a = float(sys.argv[2])
 b = float(sys.argv[3])
 e = float(sys.argv[4])
 fig,ax = plt.subplots()
+start = timer()
 r, xlist, alist,blist,ilist = bissection(a,b,e,100,f)
+end = timer()
 x = np.arange(a,b,0.001)
 xarray = np.asarray(xlist)
 ln, =  ax.plot(xarray,f(xarray),'g.',markersize = 10)
@@ -87,6 +90,9 @@ table.add_column(column_names[7],[e]*len(xlist))
 table.add_column(column_names[8],np.asarray(blist) - np.asarray(alist))
 
 print(table)
+
+print("O algoritmo rodou em: "+ str((end - start)*1000) +  " milisegundos")
+print("Iterações por milisegundos = " + str(len(xlist)/((end-start)*1000)))
 if r != 'erro':
 	ani = animation.FuncAnimation(fig, animationFunction, frames=xarray,
                     init_func=init, blit=True)

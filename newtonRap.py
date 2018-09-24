@@ -1,7 +1,4 @@
 
-# coding: utf-8
-
-# In[ ]:
 
 
 import numpy as np
@@ -9,6 +6,7 @@ import sys
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from prettytable import PrettyTable
+from timeit import default_timer as timer
 
 def newtonRap(f,fd,x0,e,maxIter):
     xlist = []
@@ -28,7 +26,6 @@ def init():
 	f = lambda x : eval(sys.argv[1])
 	x0 = float(eval(sys.argv[3]))
 	ax.set_xlim(x0-5,x0+5)
-	ax.set_ylim(-5,5)
 	return ln,textUpdate,textUpdate2,
 
 def animationFunction(x):
@@ -36,8 +33,8 @@ def animationFunction(x):
 	ln.set_xdata(x)
 	ln.set_ydata(f(x))
 	i, = np.where(xarray == x)
-	textUpdate = ax.text(xLim[0] + 0.1,-f(xLim[-1])*0.1,"Iteração = " + str(i))
-	textUpdate2 = ax.text(xLim[0] + 0.1,f(xLim[-1]) - f(xLim[-1])*0.2,"X0 = " + str(x))
+	textUpdate = ax.text(xLim[0] + 0.1,ax.get_ylim()[1]- ax.get_ylim()[1]*0.1,"Iteração = " + str(i))
+	textUpdate2 = ax.text(xLim[0] + 0.1,ax.get_ylim()[1]- ax.get_ylim()[1]*0.25,"X0 = " + str(x))
 	return ln,textUpdate,textUpdate2,
 
 f = lambda x: eval(sys.argv[1])
@@ -45,14 +42,15 @@ fd = lambda x: eval(sys.argv[2])
 x0 = float(eval(sys.argv[3]))
 e = float(eval(sys.argv[4]))
 maxIter = 100
+start = timer()
 a, xlist  = newtonRap(f,fd,x0,e,maxIter)
+end = timer()
 fig,ax = plt.subplots()
 xLim = np.arange(x0-5,x0+5,0.001)
-print(xLim[-1])
 xarray = np.asarray(xlist)
 ln, = ax.plot(xarray,f(xarray),'g.',markersize = 10)
-textUpdate = ax.text(xLim[0] + 0.1,f(xLim[-1])- f(xLim[-1])*0.1,"Iteração = " + str(0))
-textUpdate2 = ax.text(xLim[0] + 0.1,f(xLim[-1])- f(xLim[-1])*0.25,"X0 = " + str(x0))
+textUpdate = ax.text(xLim[0] + 0.1,ax.get_ylim()[1]- ax.get_ylim()[1]*0.1,"Iteração = " + str(0))
+textUpdate2 = ax.text(xLim[0] + 0.1,ax.get_ylim()[1]- ax.get_ylim()[1]*0.25,"X0 = " + str(x0))
 ax.set_title("Método de newton para " + "$"+ sys.argv[1] + "$")
 
 funcao, = ax.plot(xLim,f(xLim))
@@ -69,7 +67,9 @@ table.add_column(column_names[2],fxarray)
 table.add_column(column_names[3],flinarray)
 table.add_column(column_names[4],[e]*len(xlist))
 print(table.get_string(title = "Tabela para o método de newton para " + sys.argv[1]))
-print(a)
+print("RAIZ = ",a)
+print("O algoritmo rodou em: "+ str((end - start)*1000) +  " milisegundos")
+print("Iterações por milisegundos = " + str(len(xlist)/((end-start)*1000)))
 ani = animation.FuncAnimation(fig, animationFunction, frames=xarray,
                     init_func=init, blit=True)
 plt.show()
