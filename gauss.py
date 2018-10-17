@@ -12,10 +12,10 @@ def piv(A,b,l,p):
 		A[[l,index]] = A[[index,l]]
 		b[0,l],b[0,index] = b[0,index],b[0,l]
 		p += 1
-	return A,p
+	return p
 
 
-def gauss(A,b):
+def gauss(A,b,pivot = True):
 	p = 0
 	print("A matriz A será convertida em matriz triangular: ")
 	print("Matriz A: ")
@@ -25,7 +25,8 @@ def gauss(A,b):
 	n = A.shape[0]
 	for k in range(0,n-1):
 		print("Matriz nao pivotada :\n",A)
-		A,p = piv(A,b,k,p)
+		if pivot == True:
+			p = piv(A,b,k,p)
 		print("Matriz pivotada em :", k)
 		print(A)
 		for i in range(k,n-1):
@@ -43,8 +44,9 @@ def gauss(A,b):
 		det *= A[i,i]
 	x = sT.solveTriang(A,b,True,False)	
 	x = x[:,None]
-	if(p % 2 != 0):
-		det = -det
+	if pivot == True:
+		if(p % 2 != 0):
+			det = -det
 	print("Det A = ", det)
 	return x
 A=np.array(np.mat(sys.argv[1]),dtype=float)

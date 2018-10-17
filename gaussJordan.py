@@ -15,6 +15,7 @@ def piv(A,b,l,p = 0):
 
 def gaussJordan(A,b):
 	print("Matriz A é :\n",A)
+	A0  = A
 	print("Vetor b é : \n",np.transpose(b))
 	b0 = b
 	n = A.shape[0]
@@ -35,7 +36,7 @@ def gaussJordan(A,b):
 	print("A nova matriz A é: \n",AI[0])
 	print("A inversa de A é : \n",AI[1])
 	print("O vetor solução x é : \n",np.transpose(b))
-	print("O vetor de residuos é: \n",(AI[0].dot(np.transpose(b)))-np.transpose(b0))
+	print("O vetor de residuos é: \n",(A0.dot(np.transpose(b)))-np.transpose(b0))
 	return b
 
 
