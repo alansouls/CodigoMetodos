@@ -1,6 +1,7 @@
 import sys 
 import numpy as np
 import solveTriang as sT
+from timeit import default_timer as timer
 
 
 def piv(A,l,p):
@@ -21,9 +22,10 @@ def fatorLU(A,b):
     print("Vetor b é :\n", np.transpose(b))
     n = A.shape[0]
     L = np.zeros(A.shape)
-    U = A
+    U = np.copy(A)
+    start = timer()
     for k in range(0,n):
-        p = piv(U,k,p)
+        #p = piv(U,k,p)
         for i in range(k,n-1):
             m = -U[i+1,k]/U[k,k]
             U[i+1] += U[k]*m
@@ -31,7 +33,7 @@ def fatorLU(A,b):
         
         
     for i in range(0,n):
-        piv(L,i,p)
+    	L[i,i] = 1
     
     print("Matriz U:\n", U)
     print("Matriz L:\n", L)
@@ -45,9 +47,13 @@ def fatorLU(A,b):
     for i in range(0,n):
         det *= U[i,i]
     det *= (-1**p)
+    end = timer()
+	print("Tempo de execução do código: %e", (end-start))
+	print("Tempo de execução por iteração: %e",(end-start)/n)
     print("Det de A = ", det)
     print("Vetor solução: \n",np.transpose(x))
-    print("Vetor resíduos:\n", L@np.transpose(y) - np.transpose(b))
+    print("Vetor resíduos:\n", np.transpose(b) - A@np.transpose(x))
+    return x
 
 
 A=np.array(np.mat(sys.argv[1]),dtype=float)

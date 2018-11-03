@@ -1,5 +1,6 @@
 import sys 
 import numpy as np
+from timeit import default_timer as timer
 
 def piv(A,b,l,p = 0):
 	n = A.shape[0]
@@ -15,14 +16,15 @@ def piv(A,b,l,p = 0):
 
 def gaussJordan(A,b):
 	print("Matriz A é :\n",A)
-	A0  = A
+	A0  = np.copy(A)
 	print("Vetor b é : \n",np.transpose(b))
-	b0 = b
+	b0 = np.copy(b)
 	n = A.shape[0]
 	I = np.zeros(A.shape)
 	for i in range(0,n):
 		I[i,i] = 1
 	AI = np.array([A,I])
+	start = timer()
 	for i in range(0,n):
 		A = piv(AI[0],b,i)
 		AI[0] = A
@@ -33,10 +35,13 @@ def gaussJordan(A,b):
 				m = -AI[0,k,i]/AI[0,i,i]
 				AI[:,k] += AI[:,i]*m
 				b[0,k] += b[0,i]*m
+	end = timer()
+	print("Tempo de execução do código: %e", (end-start))
+	print("Tempo de execução por iteração: %e",(end-start)/n)
 	print("A nova matriz A é: \n",AI[0])
 	print("A inversa de A é : \n",AI[1])
 	print("O vetor solução x é : \n",np.transpose(b))
-	print("O vetor de residuos é: \n",(A0.dot(np.transpose(b)))-np.transpose(b0))
+	print("O vetor de residuos é: \n",np.transpose(b0) - A0@np.transpose(b))
 	return b
 
 

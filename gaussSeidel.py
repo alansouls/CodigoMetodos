@@ -1,5 +1,6 @@
 import sys 
 import numpy as np
+from timeit import default_timer as timer
 
 
 def checkMatrix(A):
@@ -13,6 +14,21 @@ def checkMatrix(A):
             return False
     return True 
 
+def checkSassenfeld(A):
+    b = np.zeros(A.shape[0])
+    for i in range(0,A.shape[0]):
+        s = 0
+        for j in range(0,A.shape[0]):
+            if i != j:
+                if j < i:
+                    s += abs(A[i,j])*b[j]
+                else:
+                    s += abs(A[i,j])
+        b[i] = s/A[i,i]
+    
+    if np.amax(b) < 1:
+        return True
+    return False
 def gaussSeidel(A,b,e,maxIter = 300):
     print("Matriz A:\n",A) 
     it = 0
@@ -25,8 +41,13 @@ def gaussSeidel(A,b,e,maxIter = 300):
         print("A matriz pode não convergir")
     else:
         print("A matriz possui diagonal estritamente dominante")
+    print("Verificando se a matriz obedece o critério de Sassenfeld...")
+    if checkSassenfeld(A) == False:
+        print("A matriz pode não convergir")
+    else:
+        print("A matriz obedece o critério de Sassenfeld")
 
- 
+    start = timer()
     for p in range(0,maxIter):
          it += 1
          xAnt = np.copy(x)
@@ -40,10 +61,13 @@ def gaussSeidel(A,b,e,maxIter = 300):
          print("D\n",d)
          maxDR = np.amax(d)/np.amax(abs(x))
          if maxDR < e:
-              break
-    print(A @ np.transpose(x) - np.transpose(b))         
+              break 
+    end = timer()
+    print("Tempo de execução do código: %e", (end-start))
+    print("Tempo de execução por iteração: %e",(end-start)/it)       
     print("O vetor solução aproximado é \n", np.transpose(x))
     print("Numero de iterações: ", it)
+    print("O vetor de residuos é: \n",np.transpose(b) - A@np.transpose(x))
     return x
 
 

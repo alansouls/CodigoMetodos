@@ -1,5 +1,6 @@
 import sys 
 import numpy as np
+from timeit import default_timer as timer
 
 
 def checkMatrix(A):
@@ -35,19 +36,22 @@ def gaussJacobi(A,b,e,maxIter = 300):
 	for i  in range(n):
 		g[0,i] = g[0,i]/A[i,i]
 	aux = np.copy(x)
+	start = timer()
 	for p in range(0,maxIter):
 		x = aux
-		print("XP\n",x)
 		xProx = np.transpose(C @ np.transpose(x) + np.transpose(g))
 		aux = np.copy(xProx)
-		print("XS\n",x)
+		print("Vetor x(",p+1,"):\n",xProx)
 		d = abs(xProx - x)
-		print("D\n",d)
 		maxDR = np.amax(d)/np.amax(abs(x))
 		if maxDR < e:
 			break
+	end = timer()
+	print("Tempo de execução do código: %e", (end-start))
+	print("Tempo de execução por iteração: %e",(end-start)/p+1)
 	print("O vetor solução aproximado é \n", np.transpose(xProx))
-	print("Numero de iterações: ", p)
+	print("Numero de iterações: ", p+1)
+	print("O vetor de residuos é: \n",np.transpose(b) - A@np.transpose(xProx))
 	return xProx
 
 

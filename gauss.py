@@ -1,6 +1,7 @@
 import sys 
 import numpy as np
 import solveTriang as sT
+from timeit import default_timer as timer
 
 def piv(A,b,l,p):
 	n = A.shape[0]
@@ -20,9 +21,12 @@ def gauss(A,b,pivot = True):
 	print("A matriz A será convertida em matriz triangular: ")
 	print("Matriz A: ")
 	print(A)
+	Aini = np.copy(A)
 	print("Vetor b:")
 	print(np.transpose(b))
+	bini = np.copy(b)
 	n = A.shape[0]
+	start = timer()
 	for k in range(0,n-1):
 		print("Matriz nao pivotada :\n",A)
 		if pivot == True:
@@ -34,6 +38,10 @@ def gauss(A,b,pivot = True):
 			for j in range(k,n):
 				A[i+1,j] = m*A[k,j] + A[i+1,j]
 			b[0,i+1] = m*b[0,k] + b[0,i+1]
+	end = timer()
+	print("Tempo de execução do código: %e", (end-start))
+	print("Tempo de execução por iteração: %e",(end-start)/n)
+
 	print("Nova matriz A: ")
 	print(A)
 	print("Novo vetor b: ")
@@ -48,6 +56,7 @@ def gauss(A,b,pivot = True):
 		if(p % 2 != 0):
 			det = -det
 	print("Det A = ", det)
+	print("RESIDUOS:\n",np.transpose(bini) - Aini@x)
 	return x
 A=np.array(np.mat(sys.argv[1]),dtype=float)
 b=np.array(np.mat(sys.argv[2]),dtype=float)
